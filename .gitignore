@@ -6,3 +6,4 @@ worker/node_modules/
 .dev.vars
 .DS_Store
 **/**/wrangler.*.toml
+errors/

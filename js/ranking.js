@@ -5,7 +5,7 @@
 
 // Set this to your deployed Worker URL (no trailing slash), e.g.
 // 'https://run-flavinho-ranking.<your-subdomain>.workers.dev'
-export const WORKER_URL = '';
+export const WORKER_URL = 'https://run-flavinho-ranking.run-flavinho-ranking.workers.dev';
 
 const MAX_NAME = 50;
 const TOP = 100;

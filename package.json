@@ -1,0 +1,13 @@
+{
+  "name": "run-flavinho",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "npx --yes serve -l 8080 .",
+    "build:ranking": "node scripts/build-ranking.js",
+    "ack:ranking": "node scripts/build-ranking.js --ack"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

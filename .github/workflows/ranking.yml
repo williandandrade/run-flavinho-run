@@ -1,0 +1,57 @@
+name: Build ranking
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: ranking
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.build.outputs.changed }}
+    env:
+      WORKER_URL: ${{ secrets.WORKER_URL }}
+      WORKER_TOKEN: ${{ secrets.WORKER_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Fetch, filter and merge submissions
+        id: build
+        run: node scripts/build-ranking.js
+
+      - name: Commit ranking.json
+        if: steps.build.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/ranking.json
+          git commit -m "chore(ranking): update ranking.json"
+          git push
+
+      # Only after the commit is pushed, so nothing is lost if the push fails.
+      - name: Acknowledge processed submissions
+        if: steps.build.outputs.count != '0'
+        run: node scripts/build-ranking.js --ack
+
+  deploy:
+    needs: build
+    if: needs.build.outputs.changed == 'true'
+    uses: ./.github/workflows/deploy.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write

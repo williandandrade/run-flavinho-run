@@ -1,0 +1,7 @@
+node_modules/
+.ranking-ack.json
+_site/
+worker/.wrangler/
+worker/node_modules/
+.dev.vars
+.DS_Store

@@ -1,0 +1,102 @@
+# Offensive-name blocklist (Portuguese + English).
+# Names are normalized before matching: lowercase, accents removed, leetspeak
+# undone (0→o, 1→i, 3→e, 4→a, 5→s, 7→t, @→a, $→s…), non-letters removed and
+# repeated letters collapsed (fuuuck → fuck). The same is applied to terms.
+#
+#   term    → matches anywhere inside the name
+#   =term   → matches only as a whole word (short words that appear inside
+#             innocent ones, e.g. "puta" in "computador")
+
+# --- Português ---
+caralho
+=caralh
+buceta
+boceta
+=porra
+=pora
+piroca
+=pica
+=pau
+=rola
+=cu
+cuzao
+cuzinho
+viado
+viadinho
+=puta
+=puto
+putaria
+filhodaputa
+filhadaputa
+=fdp
+=pqp
+=vsf
+=tnc
+=krl
+=crl
+=kct
+=bct
+=prr
+merda
+foder
+fuder
+fodase
+fudido
+=foda
+arrombado
+arrombada
+cacete
+caceta
+babaca
+=otario
+=otaria
+corno
+vagabunda
+vagabundo
+vadia
+xoxota
+xereca
+=xota
+punheta
+punheteiro
+boquete
+bosta
+desgracado
+desgracada
+estupro
+estuprador
+pedofilo
+crioulo
+=nazi
+=nazista
+hitler
+
+# --- English ---
+fuck
+shit
+bitch
+=cunt
+=dick
+=cock
+pussy
+asshole
+=ass
+bastard
+nigger
+nigga
+faggot
+=fag
+whore
+slut
+retard
+=rape
+rapist
+=sex
+porno
+=porn
+=anal
+twat
+=wank
+wanker
+motherf
+pedophile

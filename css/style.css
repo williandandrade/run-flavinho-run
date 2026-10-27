@@ -1,0 +1,306 @@
+/* Run! Flavinho, run! — NES palette only, hard pixel edges. */
+
+:root {
+  --black: #000000;
+  --white: #FCFCFC;
+  --dark-blue: #0000BC;
+  --blue: #0058F8;
+  --light-blue: #3CBCFC;
+  --yellow: #F8B800;
+  --red: #F83800;
+  --salmon: #F87858;
+  --gray: #7C7C7C;
+  --tile: 32px;
+  --hud-font: 12px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Press Start 2P', monospace;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+#screen {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  width: 100dvw;
+  height: 100dvh;
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+[hidden] { display: none !important; }
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--white);
+  background: var(--black);
+  border: 2px solid var(--white);
+  border-radius: 0;
+  padding: 0.6em 0.8em;
+  cursor: pointer;
+  pointer-events: auto;
+}
+button:hover, button:focus-visible { background: var(--dark-blue); outline: none; }
+button:disabled { color: var(--gray); border-color: var(--gray); cursor: default; background: var(--black); }
+
+/* --- Board overlay (positioned by JS over the canvas board) -------------- */
+
+#board {
+  position: fixed;
+  pointer-events: none;
+}
+
+#hud {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: var(--tile);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 calc(var(--tile) * 0.25);
+  font-size: var(--hud-font);
+}
+.hud-left { display: flex; gap: calc(var(--hud-font) * 0.5); }
+#hud button {
+  font-size: calc(var(--hud-font) * 0.8);
+  padding: 0.3em 0.45em;
+}
+#btn-crt[aria-pressed="false"] { color: var(--gray); border-color: var(--gray); }
+#title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: var(--hud-font);
+  font-weight: normal;
+  color: var(--yellow);
+  white-space: nowrap;
+}
+.hud-right { white-space: nowrap; }
+#mult { color: var(--salmon); }
+body.expired .hud-right { visibility: hidden; }
+
+#countdown-box {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7em;
+  text-align: center;
+}
+#countdown { line-height: 1; white-space: nowrap; color: var(--white); }
+#countdown-sub { line-height: 1; white-space: nowrap; color: var(--yellow); }
+#countdown-box.final #countdown { color: var(--red); animation: blink 0.8s steps(1) infinite; }
+#countdown-box.final #countdown-sub { display: none; }
+
+#message {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--tile) * 1.4);
+  transform: translateX(-50%);
+  max-width: 92%;
+  padding: 0.9em 1.1em;
+  background: var(--black);
+  border: 2px solid var(--white);
+  font-size: var(--hud-font);
+  line-height: 1.7;
+  text-align: center;
+}
+#message-text { animation: blink 1.2s steps(1) infinite; }
+
+#btn-ranking {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--tile) * 1.2);
+  transform: translateX(-50%);
+  font-size: var(--hud-font);
+}
+
+@keyframes blink { 50% { visibility: hidden; } }
+
+/* --- CRT scanlines (hard-edged stripes, toggleable) ----------------------- */
+
+#crt {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  display: none;
+  z-index: 4;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0, transparent 2px,
+    rgba(0, 0, 0, 0.22) 2px, rgba(0, 0, 0, 0.22) 4px
+  );
+}
+body.crt #crt { display: block; }
+
+/* --- Virtual D-pad (touch, landscape) ------------------------------------- */
+
+#dpad {
+  position: fixed;
+  left: max(16px, env(safe-area-inset-left));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  width: 168px;
+  height: 168px;
+  display: none;
+  grid-template-columns: repeat(3, 56px);
+  grid-template-rows: repeat(3, 56px);
+  grid-template-areas: ". up ." "left . right" ". down .";
+  touch-action: none;
+  z-index: 5;
+  opacity: 0.55;
+}
+#dpad .btn {
+  position: relative;
+  border: 3px solid var(--white);
+  background: rgba(0, 0, 0, 0.45);
+}
+#dpad .btn.active { background: var(--blue); }
+#dpad .up { grid-area: up; }
+#dpad .down { grid-area: down; }
+#dpad .left { grid-area: left; }
+#dpad .right { grid-area: right; }
+/* Arrow glyphs as CSS triangles */
+#dpad .btn::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border: 10px solid transparent;
+  transform: translate(-50%, -50%);
+}
+#dpad .up::after { border-bottom-color: var(--white); margin-top: -5px; }
+#dpad .down::after { border-top-color: var(--white); margin-top: 5px; }
+#dpad .left::after { border-right-color: var(--white); margin-left: -5px; }
+#dpad .right::after { border-left-color: var(--white); margin-left: 5px; }
+
+@media (pointer: coarse) and (orientation: landscape) {
+  body:not(.expired):not(.modal-open) #dpad { display: grid; }
+}
+
+/* --- Rotate overlay (touch, portrait) -------------------------------------- */
+
+#rotate {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 20;
+  background: rgba(0, 0, 0, 0.7);
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--yellow);
+}
+@media (pointer: coarse) and (orientation: portrait) {
+  #rotate { display: flex; }
+}
+
+/* --- Modal --------------------------------------------------------------- */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.6);
+  touch-action: auto;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.modal-box {
+  display: flex;
+  flex-direction: column;
+  width: min(560px, 100%);
+  max-height: 100%;
+  padding: 16px;
+  background: var(--black);
+  border: 4px solid var(--white);
+  outline: 4px solid var(--dark-blue);
+  font-size: 11px;
+  line-height: 1.6;
+  overflow: hidden;
+}
+.modal-box h2 { margin: 0 0 8px; color: var(--red); font-size: 24px; font-weight: normal; text-align: center; }
+.modal-box h3 { margin: 8px 0 0; color: var(--yellow); font-size: 12px; font-weight: normal; }
+#final-score { margin: 0 0 12px; text-align: center; }
+#submit-form { display: flex; flex-direction: column; gap: 8px; }
+#submit-form label { color: var(--light-blue); }
+.name-row { display: flex; gap: 8px; align-items: center; }
+#name {
+  flex: 1;
+  min-width: 0;
+  font-family: inherit;
+  font-size: 12px;
+  padding: 8px;
+  color: var(--white);
+  background: var(--black);
+  border: 2px solid var(--light-blue);
+  border-radius: 0;
+  outline: none;
+}
+#name:focus { border-color: var(--yellow); }
+#name-count { color: var(--gray); font-size: 9px; white-space: nowrap; }
+#submit-status { margin: 0; min-height: 1.6em; color: var(--yellow); }
+.note { margin: 4px 0 6px; color: var(--gray); font-size: 9px; }
+
+#ranking-list {
+  flex: 1;
+  min-height: 80px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+  border: 2px solid var(--dark-blue);
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+#ranking-list li { display: flex; gap: 8px; padding: 4px 6px; }
+#ranking-list li:nth-child(even) { background: #0000BC40; }
+#ranking-list li.mine { background: var(--dark-blue); color: var(--yellow); }
+#ranking-list li.empty { color: var(--gray); justify-content: center; }
+#ranking-list .pos { width: 4ch; flex: none; color: var(--light-blue); }
+#ranking-list .name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+#ranking-list .tag { color: var(--salmon); font-size: 8px; }
+#ranking-list .score { flex: none; }
+.actions { display: flex; justify-content: center; gap: 8px; }
+
+@media (pointer: coarse) {
+  #name { font-size: 16px; } /* prevents iOS zoom-on-focus */
+}
+@media (max-height: 480px) {
+  .modal { padding: 8px; }
+  .modal-box { padding: 10px; font-size: 9px; }
+  .modal-box h2 { font-size: 16px; margin-bottom: 4px; }
+  #final-score { margin-bottom: 6px; }
+}

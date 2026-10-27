@@ -1,0 +1,16 @@
+name = "run-flavinho-ranking"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# Create with: npx wrangler kv namespace create RANKING_KV
+# then paste the returned id below.
+[[kv_namespaces]]
+binding = "RANKING_KV"
+id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+
+[vars]
+# GitHub Pages origin (scheme + host, no path). Comma-separate to allow more,
+# e.g. "https://your-user.github.io,http://localhost:8080"
+ALLOWED_ORIGIN = "https://your-user.github.io"
+
+# Secret (not stored here): npx wrangler secret put WORKER_TOKEN

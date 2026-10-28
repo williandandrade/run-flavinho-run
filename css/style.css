@@ -224,7 +224,7 @@ body.splash #splash { display: flex; }
   content: '';
   position: absolute;
   inset: -40px;
-  background: url('../assets/splash.jpeg') center / cover no-repeat;
+  background: url('../assets/splash-v2.jpeg') center / cover no-repeat;
   filter: blur(20px) brightness(0.45);
 }
 /* The art itself is always shown whole (title included) at any aspect ratio. */

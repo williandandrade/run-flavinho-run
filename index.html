@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
   <meta name="theme-color" content="#000000">
   <meta name="description" content="Fuja da polícia no labirinto enquanto a contagem regressiva corre.">
   <title>Run! Flavinho, run!</title>
@@ -52,22 +52,24 @@
     <div class="modal-box">
       <h2 id="modal-title">PEGO!</h2>
       <p id="final-score">PONTOS: 000000</p>
-      <form id="submit-form" novalidate>
-        <label for="name">Seu nome</label>
-        <div class="name-row">
-          <input id="name" type="text" maxlength="50" autocomplete="nickname" spellcheck="false" required>
-          <span id="name-count">0/50</span>
-        </div>
-        <button id="btn-submit" type="submit">Enviar pontuação</button>
-        <p id="submit-status" aria-live="polite"></p>
-      </form>
-      <h3>TOP 100</h3>
-      <p class="note">O ranking é atualizado a cada ~15 minutos.</p>
-      <ol id="ranking-list"></ol>
       <div class="actions">
         <button id="btn-replay" type="button">Jogar novamente</button>
         <button id="btn-close" type="button" hidden>Fechar</button>
       </div>
+      <form id="submit-form" novalidate>
+        <div class="name-row">
+          <input id="name" type="text" maxlength="50" placeholder="Seu nome" aria-label="Seu nome"
+            autocomplete="nickname" spellcheck="false" required>
+          <button id="btn-submit" type="submit" aria-label="Enviar pontuação">Enviar</button>
+        </div>
+        <div class="form-meta">
+          <p id="submit-status" aria-live="polite"></p>
+          <span id="name-count">0/50</span>
+        </div>
+      </form>
+      <h3>TOP 100</h3>
+      <p class="note">O ranking é atualizado a cada ~15 minutos.</p>
+      <ol id="ranking-list"></ol>
     </div>
   </div>
 

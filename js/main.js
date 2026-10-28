@@ -125,6 +125,26 @@ function onAny() {
 }
 
 initInput({ onDir, onAny, isBlocked: () => modal.isOpen() });
+audio.installUnlock();
+preventZoom();
+
+/** Block pinch and double-tap zoom (iOS ignores user-scalable=no). */
+function preventZoom() {
+  const block = (e) => e.preventDefault();
+  for (const type of ['gesturestart', 'gesturechange', 'gestureend']) {
+    document.addEventListener(type, block, { passive: false });
+  }
+  document.addEventListener('touchmove', (e) => {
+    if (e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
+  let lastTap = 0;
+  document.addEventListener('touchend', (e) => {
+    const now = e.timeStamp;
+    // Leave buttons/inputs alone so their clicks still fire.
+    if (now - lastTap < 300 && !e.target.closest('button, input')) e.preventDefault();
+    lastTap = now;
+  }, { passive: false });
+}
 
 els.mute.addEventListener('click', () => {
   audio.unlock();
@@ -187,7 +207,7 @@ function relayout() {
   s.width = `${L.boardW}px`;
   s.height = `${L.boardH}px`;
   s.setProperty('--tile', `${L.tile}px`);
-  s.setProperty('--hud-font', `${Math.max(7, Math.min(20, Math.floor(Math.min(L.tile * 0.42, L.boardW / 52))))}px`);
+  s.setProperty('--hud-font', `${Math.max(7, Math.min(20, Math.floor(Math.min(L.tile * 0.42, L.boardW / 62))))}px`);
 
   const b = map.block;
   const box = els.box.style;

@@ -26,6 +26,8 @@ const freq = (midi) => 440 * 2 ** ((midi - 69) / 12);
 
 /** Create/resume the audio context. Call from a user gesture handler. */
 export function unlock() {
+  // iOS 17+: play through the silent switch, like a game/media app would.
+  try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch { /* unsupported */ }
   if (!ctx) {
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
@@ -48,7 +50,19 @@ export function unlock() {
     src.connect(ctx.destination);
     src.start(0);
   }
-  if (ctx.state === 'suspended') ctx.resume();
+  // 'interrupted' is iOS-specific (calls, Siri, backgrounding).
+  if (ctx.state !== 'running') ctx.resume();
+}
+
+/**
+ * Unlock audio on every gesture type browsers accept. iOS Safari only treats
+ * touchend/click (not pointerdown/touchstart) as a user activation for audio.
+ */
+export function installUnlock() {
+  const opts = { capture: true, passive: true };
+  for (const type of ['touchend', 'pointerup', 'click', 'keydown']) {
+    window.addEventListener(type, unlock, opts);
+  }
 }
 
 export const isMuted = () => muted;
@@ -60,7 +74,7 @@ export function setMuted(value) {
 }
 
 export function suspend() { if (ctx && ctx.state === 'running') ctx.suspend(); }
-export function resume() { if (ctx && ctx.state === 'suspended') ctx.resume(); }
+export function resume() { if (ctx && ctx.state !== 'running') ctx.resume(); }
 
 function tone(type, f, t, dur, vol, bus, slideTo) {
   const osc = ctx.createOscillator();

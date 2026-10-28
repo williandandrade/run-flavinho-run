@@ -6,6 +6,7 @@
 export const NES = {
   black: '#000000',
   white: '#FCFCFC',
+  darkGray: '#3C3C3C',
   gray: '#7C7C7C',
   lightGray: '#BCBCBC',
   darkBlue: '#0000BC',
@@ -19,6 +20,7 @@ export const NES = {
   darkOrange: '#E45C10',
   yellow: '#F8B800',
   brown: '#AC7C00',
+  darkBrown: '#7C4C10',
   skin: '#FCE0A8',
   tan: '#F0D0B0',
   green: '#00A800',
@@ -32,15 +34,18 @@ export const NES = {
 export const TILE_PX = 16;
 
 // ---------------------------------------------------------------------------
-// Robber (player): beanie, black eye mask, striped shirt, money bag.
+// Robber (player): short brown hair, black eye mask, blue suit with white shirt and
+// green tie, money bag.
 // Upper body (rows 0–12) + leg frames (rows 13–15) are combined per frame.
 
 const ROBBER_COLORS = {
-  H: NES.red,      // beanie
+  H: NES.darkBrown, // hair
   S: NES.skin,
   K: NES.black,    // mask / stripes
-  W: NES.white,    // eyes / stripes
-  P: NES.midBlue,  // pants
+  W: NES.white,    // eyes / shirt
+  J: NES.blue,     // suit jacket
+  N: NES.green,    // tie
+  P: NES.blue,     // suit pants
   O: NES.brown,    // shoes
   T: NES.brown,    // bag outline
   Y: NES.tan,      // bag
@@ -48,18 +53,18 @@ const ROBBER_COLORS = {
 };
 
 const ROBBER_SIDE_TOP = [
-  '......HHHH......',
-  '.....HHHHHH.....',
+  '................',
+  '......HHHHH.....',
   '.....HHHHHHH....',
-  '.....SSSSSSS....',
+  '.....HHSSSSS....',
   '.....KKKWKKW....',
   '.....SSSSSSS....',
   '......SSSSS.....',
-  '.TTT.WWWWWW.....',
-  'TYYYTKKKKKKS....',
-  'TYGYTWWWWWWS....',
-  'TYYYTKKKKKK.....',
-  '.TTT.WWWWWW.....',
+  '.TTT.JJJJWW.....',
+  'TYYYTJJJJWNS....',
+  'TYGYTJJJJWNS....',
+  'TYYYTJJJJJN.....',
+  '.TTT.JJJJJJ.....',
   '......PPPPP.....',
 ];
 const ROBBER_SIDE_LEGS = [
@@ -69,33 +74,33 @@ const ROBBER_SIDE_LEGS = [
 ];
 
 const ROBBER_FRONT_TOP = [
-  '......HHHH......',
+  '................',
   '.....HHHHHH.....',
   '....HHHHHHHH....',
-  '....SSSSSSSS....',
+  '....HSSSSSSH....',
   '....KWWKKWWK....',
   '....SSSSSSSS....',
   '.....SSSSSS.....',
-  '....WWWWWWWW....',
-  '...SKKKKKKKKS...',
-  '...SWWWWWWWWSTT.',
-  '....KKKKKKKKTYYT',
-  '....WWWWWWWWTGYT',
+  '....JJWWWWJJ....',
+  '...SJJWNNWJJS...',
+  '...SJJJNNJJJSTT.',
+  '....JJJNNJJJTYYT',
+  '....JJJJJJJJTGYT',
   '.....PPPPPP..TT.',
 ];
 const ROBBER_BACK_TOP = [
-  '......HHHH......',
+  '................',
   '.....HHHHHH.....',
   '....HHHHHHHH....',
   '....HHHHHHHH....',
   '....KKKKKKKK....',
   '....SSSSSSSS....',
   '.....SSSSSS.....',
-  '....WWWWWWWW....',
-  '.TTSKKKKKKKKS...',
-  'TYYTWWWWWWWWS...',
-  'TGYTKKKKKKKK....',
-  'TYYTWWWWWWWW....',
+  '....JJJJJJJJ....',
+  '.TTSJJJJJJJJS...',
+  'TYYTJJJJJJJJS...',
+  'TGYTJJJJJJJJ....',
+  'TYYTJJJJJJJJ....',
   '.TT..PPPPPP.....',
 ];
 const ROBBER_FRONT_LEGS = [
@@ -108,7 +113,7 @@ const ROBBER_FRONT_LEGS = [
 export const WALK_CYCLE = [0, 1, 0, 2];
 
 // ---------------------------------------------------------------------------
-// Cop: blue uniform and cap. 'A' = per-AI accent (cap band + badge),
+// Cop: black Federal Police uniform and cap. 'A' = per-AI accent (cap band + badge),
 // 'L' = siren light (red/blue blinking).
 
 const COP_TOP = [
@@ -193,7 +198,7 @@ export function buildAllSprites() {
     cop[type] = SIREN_COLORS.map((siren) =>
       COP_LEGS.map((legs) =>
         buildSprite(COP_TOP.concat(legs), {
-          C: NES.blue, V: NES.darkBlue, U: NES.midBlue, N: NES.darkBlue,
+          C: NES.darkGray, V: NES.black, U: NES.darkGray, N: NES.darkGray,
           S: NES.skin, K: NES.black, G: NES.gray, A: accent, L: siren,
         }),
       ),

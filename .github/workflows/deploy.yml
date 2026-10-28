@@ -31,7 +31,7 @@ jobs:
       - name: Assemble site
         run: |
           mkdir -p _site/data
-          cp -r index.html css js _site/
+          cp -r index.html css js assets _site/
           cp data/ranking.json _site/data/
           touch _site/.nojekyll
 

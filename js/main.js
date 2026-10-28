@@ -1,5 +1,5 @@
 // Bootstrap: layout, state machine, fixed-timestep loop and DOM HUD.
-// States: READY → PLAYING → GAME_OVER (modal) → PLAYING … → EXPIRED
+// States: READY (start screen) → PLAYING → GAME_OVER (modal) → PLAYING … → EXPIRED
 
 import { CONFIG, Game } from './game.js';
 import { DIRS, computeLayout, generateMap, randomSeed } from './map.js';
@@ -12,7 +12,6 @@ import { Fireworks } from './fireworks.js';
 
 const STEP = 1 / 60;
 const MAX_STEPS = 5;
-const READY_TEXT = 'Pressione qualquer tecla ou toque para começar';
 const PAUSED_TEXT = 'PAUSADO - pressione qualquer tecla ou toque para continuar';
 const CRT_KEY = 'rfr_crt';
 
@@ -29,6 +28,7 @@ const els = {
   mute: $('btn-mute'),
   crt: $('btn-crt'),
   rankingBtn: $('btn-ranking'),
+  start: $('btn-start'),
 };
 const portraitMQ = matchMedia('(pointer: coarse) and (orientation: portrait)');
 
@@ -69,6 +69,19 @@ function startPlaying() {
   audio.startMusic();
 }
 
+const splashOpen = () => document.body.classList.contains('splash');
+
+function closeSplash() {
+  document.body.classList.remove('splash');
+}
+
+function pressStart() {
+  audio.unlock();
+  if (state !== 'READY' || !splashOpen() || portraitMQ.matches) return;
+  closeSplash();
+  startPlaying();
+}
+
 function pause() {
   if (state !== 'PLAYING' || paused) return;
   paused = true;
@@ -96,6 +109,7 @@ function enterExpired() {
   state = 'EXPIRED';
   paused = false;
   document.body.classList.add('expired');
+  closeSplash();
   audio.stopMusic();
   setMessage(null);
   modal.lockReadOnly();
@@ -124,7 +138,15 @@ function onAny() {
   }
 }
 
-initInput({ onDir, onAny, isBlocked: () => modal.isOpen() });
+initInput({ onDir, onAny, isBlocked: () => modal.isOpen() || splashOpen() });
+
+// Start screen: the button, or Enter/Space from anywhere.
+els.start.addEventListener('click', pressStart);
+window.addEventListener('keydown', (e) => {
+  if (!splashOpen() || e.repeat || (e.code !== 'Enter' && e.code !== 'Space')) return;
+  e.preventDefault(); // keeps a focused button from also firing a click
+  pressStart();
+});
 audio.installUnlock();
 preventZoom();
 
@@ -318,7 +340,6 @@ function frame(now) {
 // --- Boot --------------------------------------------------------------------
 
 relayout();
-setMessage(READY_TEXT);
 countdown.start(
   (text) => { if (state !== 'EXPIRED') els.countdown.textContent = text; },
   enterExpired,

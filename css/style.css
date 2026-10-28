@@ -203,8 +203,53 @@ body.crt #crt { display: block; }
 #dpad .right::after { border-left-color: var(--white); margin-left: 5px; }
 
 @media (pointer: coarse) and (orientation: landscape) {
-  body:not(.expired):not(.modal-open) #dpad { display: grid; }
+  body:not(.expired):not(.modal-open):not(.splash) #dpad { display: grid; }
 }
+
+/* --- Start screen ---------------------------------------------------------- */
+
+#splash {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--black);
+}
+body.splash #splash { display: flex; }
+/* Blurred, dimmed copy fills the bars around the letterboxed art. */
+#splash::before {
+  content: '';
+  position: absolute;
+  inset: -40px;
+  background: url('../assets/splash.jpeg') center / cover no-repeat;
+  filter: blur(20px) brightness(0.45);
+}
+/* The art itself is always shown whole (title included) at any aspect ratio. */
+#splash img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+#btn-start {
+  position: relative;
+  font-size: clamp(12px, 4vmin, 28px);
+  padding: 1em 1.4em;
+  color: var(--yellow);
+  background: var(--black);
+  border: 4px solid var(--white);
+  outline: 4px solid var(--dark-blue);
+  box-shadow: 0 0 0 8px rgba(0, 0, 0, 0.6);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+#btn-start:hover, #btn-start:focus-visible { background: var(--dark-blue); outline-color: var(--black); }
+#btn-start span { animation: blink 1.2s steps(1) infinite; }
 
 /* --- Rotate overlay (touch, portrait) -------------------------------------- */
 

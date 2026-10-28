@@ -11,6 +11,6 @@ id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
 [vars]
 # GitHub Pages origin (scheme + host, no path). Comma-separate to allow more,
 # e.g. "https://your-user.github.io,http://localhost:8080"
-ALLOWED_ORIGIN = "https://your-user.github.io"
+ALLOWED_ORIGIN = "https://custom-domain.com,https://your-user.github.io"
 
 # Secret (not stored here): npx wrangler secret put WORKER_TOKEN

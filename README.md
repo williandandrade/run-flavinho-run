@@ -72,7 +72,8 @@ npx wrangler kv namespace create RANKING_KV
 ```
 
 Edit `wrangler.toml` and set `ALLOWED_ORIGIN` to your Pages origin. Use only
-the scheme and host, with no path, e.g. `https://your-user.github.io`. Add
+the scheme and host, with no path. It is currently
+`https://custom-domain.com,https://your-user.github.io`. Add
 `,http://localhost:8080` if you want to test submissions locally.
 
 ```bash
@@ -97,7 +98,7 @@ Endpoints:
 Quick test:
 
 ```bash
-curl -i -X POST "$WORKER_URL/submit" -H 'Origin: https://your-user.github.io' \
+curl -i -X POST "$WORKER_URL/submit" -H 'Origin: https://custom-domain.com' \
   -H 'Content-Type: application/json' -d '{"name":"Teste","score":123}'
 curl -s "$WORKER_URL/pending" -H "Authorization: Bearer $WORKER_TOKEN"
 ```

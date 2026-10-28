@@ -18,12 +18,14 @@ js/input.js       keyboard, D-pad, swipes
 js/audio.js       Web Audio chiptune + SFX
 js/countdown.js   countdown (supports ?now=)
 js/ranking.js     ranking fetch/submit + game-over modal
+js/config.js      feature flags (generated on deploy, see below)
 js/fireworks.js   end-of-countdown fireworks
 data/ranking.json published ranking (TOP 100)
 data/blocklist.txt offensive-name filter list
 worker/           Cloudflare Worker (submit / pending / ack)
 scripts/build-ranking.js  ranking builder used by the Action
 scripts/reset-ranking.js  empties the ranking (daily reset)
+scripts/write-config.js   writes js/config.js from env vars (deploy)
 .github/workflows/        deploy.yml (Pages), ranking.yml (every 15 min), reset-ranking.yml (daily)
 ```
 
@@ -61,6 +63,26 @@ Maze shape constants (loop chance, column limits) are in `MAZE` in
 2. Go to **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 3. `deploy.yml` runs on every push to `main`, and can also be run manually. It
    publishes `index.html`, `css/`, `js/` and `data/ranking.json`.
+
+## Ranking feature flag
+
+The ranking can be turned off without touching the game code. Set the
+repository variable **Settings → Secrets and variables → Actions → Variables →
+`RANKING_ENABLED`** to `false` (`0`, `off` and `no` also work). Then run
+**Deploy to GitHub Pages** manually so the new value is published. If the
+variable is unset or set to anything else, the ranking stays on.
+
+`deploy.yml` runs `scripts/write-config.js`, which turns the variable into
+`js/config.js`. With the ranking off:
+
+- the game-over modal only shows the score and "Jogar novamente": no name form,
+  no TOP 100, and no request to `data/ranking.json`;
+- the "Ver ranking" button does not appear when the countdown ends;
+- `ranking.yml` and `reset-ranking.yml` skip their jobs.
+
+The Worker is left as is. The client simply stops calling it. Locally, edit
+`js/config.js`, or run `RANKING_ENABLED=false npm run config` (don't commit the
+result).
 
 ## Deploy the Cloudflare Worker
 

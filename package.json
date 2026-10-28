@@ -6,7 +6,8 @@
     "start": "npx --yes serve -l 8080 .",
     "build:ranking": "node scripts/build-ranking.js",
     "ack:ranking": "node scripts/build-ranking.js --ack",
-    "reset:ranking": "node scripts/reset-ranking.js"
+    "reset:ranking": "node scripts/reset-ranking.js",
+    "config": "node scripts/write-config.js"
   },
   "engines": {
     "node": ">=20"

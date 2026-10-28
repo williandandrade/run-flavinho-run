@@ -353,6 +353,13 @@ body.splash #splash { display: flex; }
 #ranking-list .tag { color: var(--salmon); font-size: 7px; }
 #ranking-list .score { flex: none; }
 
+/* RANKING_ENABLED = false: the modal is a plain game-over screen. */
+body.no-ranking #submit-form,
+body.no-ranking .modal-box h3,
+body.no-ranking .note,
+body.no-ranking #ranking-list,
+body.no-ranking #btn-ranking { display: none !important; }
+
 @media (pointer: coarse) {
   #name { font-size: 16px; } /* prevents iOS zoom-on-focus */
 }
@@ -380,4 +387,5 @@ body.splash #splash { display: flex; }
   .note { grid-column: 2; grid-row: 2; margin: 0 0 4px; }
   #ranking-list { grid-column: 2; grid-row: 3 / 5; min-height: 0; }
   #name { padding: 4px 6px; }
+  body.no-ranking .modal-box { display: flex; width: min(480px, 100%); height: auto; }
 }

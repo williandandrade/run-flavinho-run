@@ -1,7 +1,12 @@
 // Ranking: reads the static data/ranking.json, submits scores to the
 // Cloudflare Worker and shows locally pending submissions until the
 // scheduled GitHub Action publishes them. User data is only ever rendered
-// with textContent (never innerHTML).
+// with textContent (never innerHTML). Can be turned off with the
+// RANKING_ENABLED feature flag (js/config.js).
+
+import { RANKING_ENABLED } from './config.js';
+
+export { RANKING_ENABLED };
 
 // Set this to your deployed Worker URL (no trailing slash), e.g.
 // 'https://run-flavinho-ranking.<your-subdomain>.workers.dev'
@@ -45,7 +50,7 @@ export function mergePending(official) {
 }
 
 export async function submitScore(name, score) {
-  if (!WORKER_URL) return { ok: false, message: 'Ranking indisponível no momento.' };
+  if (!RANKING_ENABLED || !WORKER_URL) return { ok: false, message: 'Ranking indisponível no momento.' };
   try {
     const res = await fetch(`${WORKER_URL}/submit`, {
       method: 'POST',
@@ -116,6 +121,7 @@ export function initRankingModal({ onReplay, onClose }) {
   const replayBtn = $('btn-replay');
   const closeBtn = $('btn-close');
   let currentScore = 0;
+  if (!RANKING_ENABLED) document.body.classList.add('no-ranking');
 
   const updateCounter = () => {
     counter.textContent = `${cleanName(input.value).length}/${MAX_NAME}`;
@@ -159,7 +165,7 @@ export function initRankingModal({ onReplay, onClose }) {
     title.textContent = readOnly ? 'RANKING FINAL' : 'PEGO!';
     finalScore.textContent = `PONTOS: ${String(currentScore).padStart(6, '0')}`;
     finalScore.hidden = readOnly;
-    form.hidden = readOnly || currentScore <= 0;
+    form.hidden = !RANKING_ENABLED || readOnly || currentScore <= 0;
     replayBtn.hidden = readOnly;
     closeBtn.hidden = !readOnly;
     input.disabled = false;
@@ -169,7 +175,7 @@ export function initRankingModal({ onReplay, onClose }) {
     modal.hidden = false;
     document.body.classList.add('modal-open');
     (readOnly ? closeBtn : replayBtn).focus({ preventScroll: true });
-    refresh();
+    if (RANKING_ENABLED) refresh();
   }
 
   function close() {

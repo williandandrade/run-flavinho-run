@@ -7,7 +7,7 @@ import { Renderer } from './render.js';
 import { initInput } from './input.js';
 import * as audio from './audio.js';
 import * as countdown from './countdown.js';
-import { initRankingModal } from './ranking.js';
+import { RANKING_ENABLED, initRankingModal } from './ranking.js';
 import { Fireworks } from './fireworks.js';
 
 const STEP = 1 / 60;
@@ -115,7 +115,7 @@ function enterExpired() {
   modal.lockReadOnly();
   els.countdown.textContent = 'Perdeu Playboy';
   els.box.classList.add('final');
-  els.rankingBtn.hidden = false;
+  els.rankingBtn.hidden = !RANKING_ENABLED;
   fireworks = new Fireworks(renderer.offW, renderer.offH, () => audio.crackle());
   fitCountdown();
 }

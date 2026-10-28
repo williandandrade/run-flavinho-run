@@ -19,6 +19,8 @@ concurrency:
 
 jobs:
   reset:
+    # Skipped while the ranking feature flag is off (see README).
+    if: ${{ !contains(fromJSON('["false", "0", "off", "no"]'), vars.RANKING_ENABLED) }}
     runs-on: ubuntu-latest
     outputs:
       changed: ${{ steps.reset.outputs.changed }}

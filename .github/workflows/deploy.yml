@@ -29,9 +29,12 @@ jobs:
           ref: ${{ github.ref }}
 
       - name: Assemble site
+        env:
+          RANKING_ENABLED: ${{ vars.RANKING_ENABLED }}
         run: |
           mkdir -p _site/data
           cp -r index.html css js assets _site/
+          node scripts/write-config.js _site/js/config.js
           cp data/ranking.json _site/data/
           touch _site/.nojekyll
 

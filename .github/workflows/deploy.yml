@@ -34,6 +34,10 @@ jobs:
         run: |
           mkdir -p _site/data
           cp -r index.html css js assets _site/
+          # Cache-bust the social share image so crawlers pick up new versions.
+          BUILD_TS=$(date -u +%Y%m%d%H%M%S)
+          sed -i "s|/assets/share\.jpeg\"|/assets/share.jpeg?v=${BUILD_TS}\"|g" _site/index.html
+          grep -q "share.jpeg?v=${BUILD_TS}" _site/index.html
           node scripts/write-config.js _site/js/config.js
           cp data/ranking.json _site/data/
           touch _site/.nojekyll

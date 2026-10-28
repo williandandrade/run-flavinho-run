@@ -70,6 +70,6 @@ Positions in the simulation are in tile units; integer coordinates are tile cent
 
 ## Deploy
 
-- `deploy.yml`: on push to `main` (or called by the ranking workflows, since `GITHUB_TOKEN` pushes don't trigger workflows) assembles `_site/` from `index.html`, `css/`, `js/`, `assets/`, generated `js/config.js` and `data/ranking.json`. **New top-level files/dirs the site needs must be added there.**
+- `deploy.yml`: on push to `main` (or called by the ranking workflows, since `GITHUB_TOKEN` pushes don't trigger workflows) assembles `_site/` from `index.html`, `css/`, `js/`, `assets/`, generated `js/config.js` and `data/ranking.json`, and appends `?v=<build timestamp>` to the `share.jpeg` URLs in the `og:image`/`twitter:image` meta tags. **New top-level files/dirs the site needs must be added there.**
 - `ranking.yml` (`*/15 * * * *`) and `reset-ranking.yml` (`0 3 * * *` UTC) share the `ranking` concurrency group. Both need secrets `WORKER_URL`, `WORKER_TOKEN`.
 - Worker deploys separately with `npx wrangler deploy` from `worker/`.

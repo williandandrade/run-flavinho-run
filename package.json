@@ -5,7 +5,8 @@
   "scripts": {
     "start": "npx --yes serve -l 8080 .",
     "build:ranking": "node scripts/build-ranking.js",
-    "ack:ranking": "node scripts/build-ranking.js --ack"
+    "ack:ranking": "node scripts/build-ranking.js --ack",
+    "reset:ranking": "node scripts/reset-ranking.js"
   },
   "engines": {
     "node": ">=20"

@@ -1,0 +1,59 @@
+name: Reset ranking
+
+on:
+  schedule:
+    # Daily at 00:00 Brasília time (UTC-3). GitHub cron runs in UTC and
+    # scheduled runs can start a few minutes late.
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# Same group as ranking.yml, so a build never runs in the middle of a reset.
+concurrency:
+  group: ranking
+  cancel-in-progress: false
+
+jobs:
+  reset:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.reset.outputs.changed }}
+    env:
+      WORKER_URL: ${{ secrets.WORKER_URL }}
+      WORKER_TOKEN: ${{ secrets.WORKER_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Empty ranking.json
+        id: reset
+        run: node scripts/reset-ranking.js --keep-pending
+
+      - name: Commit ranking.json
+        if: steps.reset.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/ranking.json
+          git commit -m "chore(ranking): daily reset"
+          git push
+
+      # Drop scores submitted before the reset so the next build doesn't bring them back.
+      - name: Discard pending submissions
+        run: node scripts/reset-ranking.js --purge-only
+
+  deploy:
+    needs: reset
+    if: needs.reset.outputs.changed == 'true'
+    uses: ./.github/workflows/deploy.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write

@@ -23,7 +23,8 @@ data/ranking.json published ranking (TOP 100)
 data/blocklist.txt offensive-name filter list
 worker/           Cloudflare Worker (submit / pending / ack)
 scripts/build-ranking.js  ranking builder used by the Action
-.github/workflows/        deploy.yml (Pages), ranking.yml (cron every 15 min)
+scripts/reset-ranking.js  empties the ranking (daily reset)
+.github/workflows/        deploy.yml (Pages), ranking.yml (every 15 min), reset-ranking.yml (daily)
 ```
 
 ## Run locally
@@ -130,6 +131,30 @@ Test the builder locally without a Worker:
 echo '{"items":[{"key":"sub:1:a","name":"Maria","score":500,"ts":1}]}' > /tmp/p.json
 PENDING_FILE=/tmp/p.json node scripts/build-ranking.js
 ```
+
+## Daily ranking reset
+
+`reset-ranking.yml` empties the ranking every day at **00:00 Brasília time**
+(cron `0 3 * * *` in UTC), and can also be run manually from the Actions tab.
+It uses the same secrets as `ranking.yml` and the same concurrency group, so a
+build never overlaps a reset. It:
+
+1. Writes `[]` to `data/ranking.json` and commits it (only if it wasn't
+   already empty).
+2. Discards all submissions still queued in the Worker, so scores from the
+   previous day don't reappear on the next build.
+3. Redeploys Pages.
+
+Run it by hand:
+
+```bash
+npm run reset:ranking                                    # empty the file (+ purge the queue if WORKER_* are set)
+node scripts/reset-ranking.js --keep-pending             # empty the file only
+WORKER_URL=... WORKER_TOKEN=... node scripts/reset-ranking.js --purge-only   # purge the queue only
+```
+
+To change the schedule, edit the `cron` line in
+`.github/workflows/reset-ranking.yml` (UTC; Brasília = UTC−3).
 
 ## Notes
 

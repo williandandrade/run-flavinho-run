@@ -79,19 +79,19 @@ export function mergeRanking(existing, incoming) {
     .slice(0, TOP);
 }
 
-function setOutput(values) {
+export function setOutput(values) {
   const lines = Object.entries(values).map(([k, v]) => `${k}=${v}`).join('\n');
   if (process.env.GITHUB_OUTPUT) fs.appendFileSync(process.env.GITHUB_OUTPUT, `${lines}\n`);
   console.log(lines);
 }
 
-function workerConfig() {
+export function workerConfig() {
   const url = (process.env.WORKER_URL || '').replace(/\/+$/, '');
   const token = process.env.WORKER_TOKEN || '';
   return { url, token, headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } };
 }
 
-async function fetchPending() {
+export async function fetchPending() {
   if (process.env.PENDING_FILE) return JSON.parse(fs.readFileSync(process.env.PENDING_FILE, 'utf8')).items || [];
   const { url, token, headers } = workerConfig();
   if (!url || !token) return null;
@@ -128,17 +128,22 @@ async function build() {
   setOutput({ changed: String(changed), count: items.length });
 }
 
-async function ackProcessed() {
-  if (!fs.existsSync(ACK_FILE)) { console.log('No ack file; nothing to acknowledge.'); return; }
-  const keys = JSON.parse(fs.readFileSync(ACK_FILE, 'utf8'));
+/** Delete submissions from the Worker queue (POST /ack, in chunks). */
+export async function ackKeys(keys) {
   const { url, token, headers } = workerConfig();
-  if (!url || !token) throw new Error('WORKER_URL and WORKER_TOKEN are required for --ack');
+  if (!url || !token) throw new Error('WORKER_URL and WORKER_TOKEN are required to ack');
   for (let i = 0; i < keys.length; i += 500) {
     const res = await fetch(`${url}/ack`, {
       method: 'POST', headers, body: JSON.stringify({ keys: keys.slice(i, i + 500) }),
     });
     if (!res.ok) throw new Error(`POST /ack failed: HTTP ${res.status}`);
   }
+}
+
+async function ackProcessed() {
+  if (!fs.existsSync(ACK_FILE)) { console.log('No ack file; nothing to acknowledge.'); return; }
+  const keys = JSON.parse(fs.readFileSync(ACK_FILE, 'utf8'));
+  await ackKeys(keys);
   fs.unlinkSync(ACK_FILE);
   console.log(`acknowledged=${keys.length}`);
 }

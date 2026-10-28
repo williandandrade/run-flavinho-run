@@ -4,7 +4,7 @@ Guidance for working in this repo. `README.md` has the full setup/deploy runbook
 
 ## What this is
 
-**Run! Flavinho, run!** — a single-page site that shows a countdown to **2027-01-01 00:00 Brasília (UTC−3)** embedded in a fullscreen, Pac-Man-style pixel-art chase game (the player runs from cops). The countdown lives inside a walled block at the center of the maze. When it hits zero the game ends for good ("Perdeu Playboy" + fireworks).
+**Run! Flavinho! Run!** — a single-page site that shows a countdown to **2027-01-01 00:00 Brasília (UTC−3)** embedded in a fullscreen, Pac-Man-style pixel-art chase game (the player runs from cops). The countdown lives inside a walled block at the center of the maze. When it hits zero the game ends for good ("Perdeu Playboy" + fireworks).
 
 There are three independent parts:
 

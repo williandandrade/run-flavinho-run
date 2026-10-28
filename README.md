@@ -1,4 +1,4 @@
-# Run! Flavinho, run!
+# Run! Flavinho! Run!
 
 A countdown to **2027-01-01 00:00 (Brasília)** embedded in a fullscreen,
 Pac-Man-style pixel-art chase game. Vanilla JS (ES modules) + Canvas 2D, with

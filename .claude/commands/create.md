@@ -1,4 +1,4 @@
-# Project: "Run! Flavinho, run!" — Countdown + Pixel-Art Chase Game
+# Project: "Run! Flavinho! Run!" — Countdown + Pixel-Art Chase Game
 
 Build a single-page website, hosted on **GitHub Pages**, that combines a countdown
 timer with a fullscreen 2D pixel-art "cops and robbers" chase game in the style of
@@ -42,7 +42,7 @@ which stays in English.
 
 - The game canvas occupies **100% of viewport width and height** (`100dvw` / `100dvh`),
   with no scrollbars. Recompute the tile size on resize and orientation change.
-- **Top center**: the page title **"Run! Flavinho, run!"** in the pixel font. Also
+- **Top center**: the page title **"Run! Flavinho! Run!"** in the pixel font. Also
   set it as the `<title>`.
 - **Top right**: the live score, formatted like `PONTOS: 001230`, plus the current
   multiplier (e.g. `x1.5`).

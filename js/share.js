@@ -14,7 +14,7 @@ const shareUrl = () => document.querySelector('link[rel="canonical"]')?.href
   || `${location.origin}${location.pathname}`;
 
 const shareText = (score) =>
-  `Fiz ${score} pontos em Run! Flavinho, run! \u{1F440} Consegue me superar?`;
+  `Fiz ${score} pontos em Run! Flavinho! Run! \u{1F440} Consegue me superar?`;
 
 async function copy(text) {
   try {

@@ -311,6 +311,14 @@ body.splash #splash { display: flex; }
 /* Replay / close sit right under the game-over message. */
 .actions { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; }
 
+#share { margin-bottom: 10px; text-align: center; }
+.share-title { margin: 0 0 4px; color: var(--yellow); font-size: 9px; }
+.share-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.share-row button { display: grid; place-items: center; width: 34px; height: 34px; padding: 0; }
+.share-row svg { width: 18px; height: 18px; fill: currentColor; }
+.share-row svg.stroke { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.share-status { margin: 4px 0 0; min-height: 1.6em; color: var(--yellow); font-size: 8px; }
+
 #submit-form { display: flex; flex-direction: column; gap: 4px; }
 .name-row { display: flex; gap: 6px; align-items: stretch; }
 #name {
@@ -372,7 +380,7 @@ body.no-ranking #btn-ranking { display: none !important; }
   .modal-box {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-rows: auto auto auto 1fr;
+    grid-template-rows: auto auto auto auto 1fr;
     column-gap: 14px;
     width: min(760px, 100%);
     height: min(100%, 320px);
@@ -382,10 +390,14 @@ body.no-ranking #btn-ranking { display: none !important; }
   .modal-box h2 { grid-column: 1; grid-row: 1; font-size: 16px; }
   #final-score { grid-column: 1; grid-row: 2; margin-bottom: 6px; }
   .actions { grid-column: 1; grid-row: 3; margin-bottom: 8px; }
-  #submit-form { grid-column: 1; grid-row: 4; align-self: start; }
+  #share { grid-column: 1; grid-row: 4; margin-bottom: 6px; }
+  .share-row button { width: 28px; height: 28px; }
+  .share-row svg { width: 15px; height: 15px; }
+  .share-status { margin: 2px 0 0; }
+  #submit-form { grid-column: 1; grid-row: 5; align-self: start; }
   .modal-box h3 { grid-column: 2; grid-row: 1; margin: 0; align-self: end; }
   .note { grid-column: 2; grid-row: 2; margin: 0 0 4px; }
-  #ranking-list { grid-column: 2; grid-row: 3 / 5; min-height: 0; }
+  #ranking-list { grid-column: 2; grid-row: 3 / 6; min-height: 0; }
   #name { padding: 4px 6px; }
   body.no-ranking .modal-box { display: flex; width: min(480px, 100%); height: auto; }
 }

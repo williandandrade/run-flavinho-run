@@ -18,6 +18,7 @@ js/input.js       keyboard, D-pad, swipes
 js/audio.js       Web Audio chiptune + SFX
 js/countdown.js   countdown (supports ?now=)
 js/ranking.js     ranking fetch/submit + game-over modal
+js/share.js       share score (social links, native share, copy)
 js/config.js      feature flags (generated on deploy, see below)
 js/fireworks.js   end-of-countdown fireworks
 data/ranking.json published ranking (TOP 100)

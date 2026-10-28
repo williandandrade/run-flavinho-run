@@ -5,6 +5,7 @@
 // RANKING_ENABLED feature flag (js/config.js).
 
 import { RANKING_ENABLED } from './config.js';
+import { initShare } from './share.js';
 
 export { RANKING_ENABLED };
 
@@ -120,6 +121,8 @@ export function initRankingModal({ onReplay, onClose }) {
   const list = $('ranking-list');
   const replayBtn = $('btn-replay');
   const closeBtn = $('btn-close');
+  const shareBox = $('share');
+  const share = initShare(shareBox);
   let currentScore = 0;
   if (!RANKING_ENABLED) document.body.classList.add('no-ranking');
 
@@ -165,6 +168,8 @@ export function initRankingModal({ onReplay, onClose }) {
     title.textContent = readOnly ? 'RANKING FINAL' : 'PEGO!';
     finalScore.textContent = `PONTOS: ${String(currentScore).padStart(6, '0')}`;
     finalScore.hidden = readOnly;
+    shareBox.hidden = readOnly || currentScore <= 0;
+    share.setScore(currentScore);
     form.hidden = !RANKING_ENABLED || readOnly || currentScore <= 0;
     replayBtn.hidden = readOnly;
     closeBtn.hidden = !readOnly;
